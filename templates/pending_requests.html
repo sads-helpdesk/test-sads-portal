@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- ========================= SECTION MAIN ========================= -->
+<section class="section-intro padding-y-sm">
+    <div class="container">
+
+        <div class="intro-banner-wrap">
+            <img src="{% static 'images/banners/1.jpg' %}" class="img-fluid rounded">
+        </div>
+
+    </div> <!-- container //  -->
+</section>
+<!-- ========================= SECTION MAIN END// ========================= -->
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+    <div class="container">
+
+        <div class="row">
+            <aside class="col-md-3">
+                <nav class="list-group">
+                    {% if request.user.is_admin %}
+                        <a class="list-group-item" href="{% url 'dashboard' %}"> Dashboard </a>      
+                        <a class="list-group-item" href="{% url 'active_requests' %}"> Active requests </a>
+                        <a class="list-group-item" href="{% url 'pending_requests' %}"> Pending requests </a>
+                        <a class="list-group-item" href="{% url 'completed_requests' %}"> Completed requests </a>
+                    {% else %}
+                        <a class="list-group-item active" href="{% url 'dashboard' %}"> Dashboard </a>    
+                        <a class="list-group-item" href="{% url 'active_requests' %}"> Active requests </a>
+                    {% endif %}
+                </nav>
+            </aside> <!-- col.// -->
+            <main class="col-md-9">
+
+                <article class="card mb-3">
+                    <div class="card-body">
+                        <br>
+                        <h5>Pending requests</h5>
+                        {% if pending_support_requests %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Requesting Officer</th>
+                                    <th scope="col">Client</th>
+                                    <th scope="col">From</th>
+                                    <th scope="col">To</th>
+                                    <th scope="col">Date Submitted</th>
+                                </tr>
+                            </thead>
+                            {% for support_request in pending_support_requests %}
+                            <tbody>
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ support_request.full_name }}</td>
+                                    <td>{{ support_request.client }}</td>
+                                    <td>{{ support_request.requested_date_from }}</td>
+                                    <td>{{ support_request.requested_date_to }}</td>
+                                    <td>{{ support_request.date_request_submitted }}</td>
+                                    <td> <a href="{% url 'assign_request' support_request.id %}"><input type="submit" value="Assign" class="btn btn-primary"></a></td>
+                                </tr>
+                            </tbody>
+                            {% endfor %}
+                        </table>
+                        {% else %}
+                        <article class="card-group card-stat">
+                            <figure class="card bg">
+                                <div class="p-3">
+                                    <h5 class="title text-center">There are no pending support cases!</h5>
+                                </div>
+                            </figure>
+                        </article>
+                        {% endif %}
+                    </div> <!-- card-body .// -->
+                </article> <!-- card.// -->
+            </main> <!-- col.// -->
+        </div>
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock %}

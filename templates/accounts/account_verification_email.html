@@ -1,0 +1,13 @@
+{% autoescape off %}
+
+Hi {{ user.first_name }},
+
+A request was made to register you on the Office of the Auditor-General Systems Assurance and Data Science Helpdesk portal.
+ If this was you please click on below link to confirm your registration request.
+http://{{domain}}{% url 'activate' uidb64=uid token=token %}, 
+
+If you did not request to register, report this to sads.helpdesk@twopointfivedata.com
+
+Thank you.
+
+{% endautoescape %}

@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+
+    <!-- ============================ COMPONENT REGISTER   ================================= -->
+    <div class="card mx-auto" style="max-width:520px; margin-top:40px;">
+        <article class="card-body">
+            <header class="mb-4">
+                <h4 class="card-title">Submit request by filling the form below</h4>
+                {% include 'includes/alerts.html' %}
+            </header>
+            <form id="requestForm" action="{% url 'new_request' %}" method="post">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="col form-group">
+                        <label>First name</label>
+                        {{ form.first_name }}
+                    </div> <!-- form-group end.// -->
+                    <div class="col form-group">
+                        <label>Last name</label>
+                        {{ form.last_name }}
+                    </div> <!-- form-group end.// -->
+                </div> <!-- form-row end.// -->
+                <div class="form-row">
+                    <div class="col form-group">
+                        <label>Email address</label>
+                        {{ form.email }}
+                    </div> <!-- form-group end.// -->
+                    <div class="col form-group">
+                        <label>Phone number</label>
+                        {{ form.phone_number }}
+                    </div> <!-- form-group end.// -->
+                </div> <!-- form-group end.// -->
+                <br>
+                <div class="form-row">
+                    <label>Select your request category</label>
+                    {{ form.request_category }}
+                </div> <!-- form-group end.// -->
+                <br>
+                <div class="form-row">
+                    <div class="col form-group">
+                        <label>Sector/Regional Office</label>
+                        {{ form.directorate }}
+                    </div> <!-- form-group end.// -->
+                    <div class="col form-group">
+                        <label>Client</label>
+                        {{ form.client }}
+                    </div> <!-- form-group end.// -->
+                </div> <!-- form-group end.// -->
+                <div class="form-group">
+					<label>Other Client</label>
+					{{ form.other_client }}
+				</div> <!-- form-group end.// -->
+                <div class="form-row">
+                    <div class="col form-group">
+                        <label>Date from</label>
+                        {{ form.requested_date_from }}
+                    </div> <!-- form-group end.// -->
+                    <div class="col form-group">
+                        <label>Date to</label>
+                        {{ form.requested_date_to }}
+                    </div> <!-- form-group end.// -->
+                </div> <!-- form-row end.// -->
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block"> Submit request </button>
+                </div> <!-- form-group// -->
+                {{ form.errors }}
+            </form>
+        </article><!-- card-body.// -->
+    </div> <!-- card .// -->
+    <br><br>
+    <!-- ============================ COMPONENT REGISTER  END.// ================================= -->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        let directorate_field = document.getElementById("id_directorate")
+        let client_field = document.getElementById("id_client")
+        directorate_field.addEventListener("change", getDirectorateId)
+
+        function getDirectorateId(e){
+            console.log(e.target.value)
+            let directorate_id = e.target.value
+
+            const data = { id: directorate_id };
+            let url = "{% url  'load_clients' %}"
+
+        fetch(url, {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+
+        .then(data => {
+        console.log('Success:', data);
+        client_field.innerHTML = '<option value="" selected="">-----------------</option>'
+        for (let i = 0; i < data.length; i++){
+            client_field.innerHTML += `<option value="${data[i]["id"]}" selected="">${data[i]["name"]}</option>`
+
+        }
+        })
+
+        .catch((error) => {
+        console.error('Error:', error);
+        });
+        }
+
+    </script>
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+{% endblock %}

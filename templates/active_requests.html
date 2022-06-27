@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- ========================= SECTION MAIN ========================= -->
+<section class="section-intro padding-y-sm">
+    <div class="container">
+
+        <div class="intro-banner-wrap">
+            <img src="{% static 'images/banners/1.jpg' %}" class="img-fluid rounded">
+        </div>
+
+    </div> <!-- container //  -->
+</section>
+<!-- ========================= SECTION MAIN END// ========================= -->
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+    <div class="container">
+
+        <div class="row">
+            <aside class="col-md-3">
+                <nav class="list-group">
+                    {% if request.user.is_admin %}
+                        <a class="list-group-item" href="{% url 'dashboard' %}"> Dashboard </a>    
+                        <a class="list-group-item" href="{% url 'active_requests' %}"> Active requests </a>
+                        <a class="list-group-item" href="{% url 'pending_requests' %}"> Pending requests </a>
+                        <a class="list-group-item" href="{% url 'completed_requests' %}"> Completed requests </a>
+                    {% else %}
+                        <a class="list-group-item active" href="{% url 'dashboard' %}"> Dashboard </a>    
+                        <a class="list-group-item" href="{% url 'active_requests' %}"> Active requests </a>
+                    {% endif %}
+                </nav>
+            </aside> <!-- col.// -->
+            <main class="col-md-9">
+
+                <article class="card mb-3">
+                    <div class="card-body">
+                        <br>
+                        <h5>Active requests</h5>
+                        {% if active_support_requests %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Requesting Officer</th>
+                                    <th scope="col">Directorate</th>
+                                    <th scope="col">Client</th>
+                                    <th scope="col">Request category</th>
+                                    <th scope="col">Start</th>
+                                    <th scope="col">Finish</th>
+                                </tr>
+                            </thead>
+                            {% for support_request in active_support_requests %}
+                            <tbody>
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ support_request.full_name }}</td>
+                                    <td>{{ support_request.directorate }}</td>
+                                    <td>{{ support_request.client }}</td>
+                                    <td>{{ support_request.request_category }}</td>
+                                    <td>{{ support_request.allocated_date_from }}</td>
+                                    <td>{{ support_request.allocated_date_to }}</td>
+                                </tr>
+                            </tbody>
+                            {% endfor %}
+                        </table>
+                        {% else %}
+                        <article class="card-group card-stat">
+                            <figure class="card bg">
+                                <div class="p-3">
+                                    <h5 class="title text-center">There are no active support cases!</h5>
+                                </div>
+                            </figure>
+                        </article>
+                        {% endif %}
+                    </div> <!-- card-body .// -->
+                </article> <!-- card.// -->
+            </main> <!-- col.// -->
+        </div>
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock %}
